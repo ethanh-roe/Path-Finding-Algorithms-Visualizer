@@ -5,18 +5,23 @@ import java.awt.*;
 public class Node {
 
     private int x;
+
     private int y;
+
     private int g;
+
     private int h;
+
     private int f;
+
     private Node previousNode;
+
     private Color color;
 
     public Node(int x, int y, Node prevNode) {
         this.x = x;
         this.y = y;
         this.previousNode = prevNode;
-
     }
 
     public Node(int x, int y) {

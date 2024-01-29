@@ -1,8 +1,10 @@
 package main;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
-public class AStarAlgorithm implements PathFindingAlgorithm {
+public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
 
     private int g = 0;
 
@@ -10,9 +12,11 @@ public class AStarAlgorithm implements PathFindingAlgorithm {
 
     private int f = 0;
 
-    private ArrayList<Node> openList = new ArrayList<>();
+    private PriorityQueue<Node> openList = new PriorityQueue<>(1, new NodeComparator());
 
     private ArrayList<Node> closedList = new ArrayList<>();
+
+    private ArrayList<Node> tempNeighborList = new ArrayList<>();
 
     private Node endNode;
 
@@ -25,56 +29,114 @@ public class AStarAlgorithm implements PathFindingAlgorithm {
 
     public AStarAlgorithm(Panel p) {
         panel = p;
-        openList.set(0, new Node(0, 0));
-        endNode = new Node(panel.getWidth() / 10 - 1, panel.getHeight() / 10 - 1);
+        endNode = new Node(panel.getWidth() / 10 - 1, panel.getHeight() / 10 - 5);
         startNode = new Node(0, 0);
-        currentNode = startNode;
+        openList.add(startNode);
     }
 
     @Override
     public void findPath() {
-        openList.add(startNode);
-        startNode.setH(endNode);
-        startNode.setG();
-        startNode.setF();
-        Node low = openList.get(0);
-        for (int i = 1; i < openList.size(); i++) {
-            if (openList.get(i).getF() < low.getF()) {
-                low = openList.get(i);
+        try {
+            aStar();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void aStar() throws InterruptedException {
+        while (openList.size() > 0) {
+            Thread.sleep(10);
+            currentNode = openList.poll();
+            closedList.add(currentNode);
+            System.out.println(currentNode.getX() + ", " + currentNode.getY());
+            System.out.println(endNode.getX() + ", " + endNode.getY());
+
+            if (currentNode.getX() == endNode.getX() && currentNode.getY() == endNode.getY()) {
+                //TODO
+                endNode.setParent(currentNode);
+                System.out.println("found end");
+                foundEnd();
+                return;
+            }
+            findNeighbors(currentNode);
+            for (Node n : tempNeighborList) {
+
+                if (panel.isWall(n.getY(), n.getX()) || closedListHas(n)) {
+
+                } else {
+                    if (!openListHas(n) || openList.comparator().compare(currentNode, n) == 1) {
+                        n.setParent(currentNode);
+                        if (!openListHas(n)) {
+                            openList.add(n);
+                        }
+                    }
+                }
+            }
+            updateGrid();
+        }
+
+    }
+
+    private void foundEnd() throws InterruptedException {
+        Node current = endNode;
+        while(current != startNode){
+            Thread.sleep(10);
+            panel.setGridState(current.getY(), current.getX(), 4);
+            current = current.getPreviousNode();
+        }
+    }
+
+    private boolean closedListHas(Node node){
+        for(Node n: closedList){
+            if(n.getY() == node.getY() && n.getX() == node.getX()){
+                return true;
             }
         }
-        closedList.add(low);
-        findNeighbors(low);
+        return false;
+    }
+
+    private boolean openListHas(Node node){
+        for(Node n: openList){
+            if(n.getY() == node.getY() && n.getX() == node.getX()){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void updateGrid() {
-        // TODO Auto-generated method stub
-
+        for (Node n : openList) {
+            panel.setGridState(n.getY(), n.getX(), 2);
+        }
+        for (Node n : closedList) {
+            panel.setGridState(n.getY(), n.getX(), 3);
+        }
+        panel.repaint();
     }
 
     private void findNeighbors(Node node) {
+        tempNeighborList.clear();
         Node temp;
         int x = node.getX();
         int y = node.getY();
-        boolean inClosedList = false;
-        boolean inOpenList = false;
-        if (x == 0 && y == 0) {
-            temp = new Node(1, 0, node);
-            initNode(temp);
-            openList.add(temp);
-
-            temp = new Node(0, 1, node);
-            initNode(temp);
-            openList.add(temp);
-
-            temp = new Node(1, 1, node);
-            initNode(temp);
-            openList.add(temp);
-        } else {
-
-
+        for (int xx = -1; xx <= 1; xx++) {
+            for (int yy = -1; yy <= 1; yy++) {
+                if (xx == 0 && yy == 0) {
+                    continue; // You are not neighbor to yourself
+                }
+                if ( Math.abs(xx) + Math.abs(yy) > 1) {
+                    continue;
+                }
+                if (isOnMap(x + xx, y + yy)) {
+                    tempNeighborList.add(new Node(x + xx, y + yy, currentNode));
+                }
+            }
         }
+
+    }
+    private boolean isOnMap(int x, int y) {
+        return x >= 0 && y >= 0 && x < panel.getScreenWidth() / 10 && y < panel.getScreenHeight() / 10;
     }
 
     private void initNode(Node n) {
@@ -84,4 +146,8 @@ public class AStarAlgorithm implements PathFindingAlgorithm {
     }
 
 
+    @Override
+    public void run() {
+        findPath();
+    }
 }
