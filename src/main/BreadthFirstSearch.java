@@ -40,10 +40,10 @@ public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
     @Override
     public void updateGrid() {
         for (Node n : visited) {
-            panel.setGridState(n.getY(), n.getX(), 3);
+            panel.setGridState((int) n.getY(), (int) n.getX(), 3);
         }
         for (Node n : queue) {
-            panel.setGridState(n.getY(), n.getX(), 2);
+            panel.setGridState((int) n.getY(), (int) n.getX(), 2);
         }
         panel.repaint();
     }
@@ -84,7 +84,7 @@ public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
         Node current = endNode;
         while (current != startNode) {
             Thread.sleep(10);
-            panel.setGridState(current.getY(), current.getX(), 4);
+            panel.setGridState((int) current.getY(), (int) current.getX(), 4);
             current = current.getPreviousNode();
         }
     }
@@ -101,8 +101,8 @@ public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
     private void findNeighbors(Node node) {
         tempNeighborList.clear();
         Node temp;
-        int x = node.getX();
-        int y = node.getY();
+        double x = node.getX();
+        double y = node.getY();
         for (int r = -1; r <= 1; r++) {
             for (int c = -1; c <= 1; c++) {
                 if (r == 0 && c == 0) {
@@ -111,7 +111,7 @@ public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
                 if (Math.abs(r) + Math.abs(c) > 1) {
                     continue;
                 }
-                if (isOnMap(x + c, y + r)) {
+                if (isOnMap((int) x + c, (int) y + r)) {
                     tempNeighborList.add(new Node(x + c, y + r, currentNode));
                 }
             }

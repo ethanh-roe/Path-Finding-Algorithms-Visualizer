@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 
 public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
 
-    private int dist;
+    private double dist;
     private int g = 0;
 
     private int h = 0;
@@ -47,7 +47,7 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
     }
 
     private void aStar() throws InterruptedException {
-        int tempG;
+        double tempG;
         boolean newPath = false;
         while (openList.size() > 0) {
             Thread.sleep(10);
@@ -61,7 +61,7 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
             }
             findNeighbors(currentNode);
             for (Node n : tempNeighborList) {
-                if(!closedListHas(n) && !panel.isWall(n.getY(), n.getX())){
+                if(!closedListHas(n) && !panel.isWall((int) n.getY(), (int) n.getX())){
                     tempG = currentNode.getG() + currentNode.getH();
 
                     newPath = false;
@@ -93,7 +93,7 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
         while(current != startNode){
             dist++;
             Thread.sleep(10);
-            panel.setGridState(current.getY(), current.getX(), 4);
+            panel.setGridState((int)current.getY(), (int)current.getX(), 4);
             current = current.getPreviousNode();
         }
         System.out.println("Distance = " + dist);
@@ -120,10 +120,10 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
     @Override
     public void updateGrid() {
         for (Node n : openList) {
-            panel.setGridState(n.getY(), n.getX(), 2);
+            panel.setGridState((int) n.getY(), (int) n.getX(), 2);
         }
         for (Node n : closedList) {
-            panel.setGridState(n.getY(), n.getX(), 3);
+            panel.setGridState((int) n.getY(), (int) n.getX(), 3);
         }
         panel.repaint();
     }
@@ -131,8 +131,8 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
     private void findNeighbors(Node node) {
         tempNeighborList.clear();
         Node temp;
-        int x = node.getX();
-        int y = node.getY();
+        double x = node.getX();
+        double y = node.getY();
         for (int r = -1; r <= 1; r++) {
             for (int c = -1; c <= 1; c++) {
                 if (c == 0 && r == 0) {
@@ -141,7 +141,7 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
                 if ( Math.abs(c) + Math.abs(r) > 1) {
                     continue;
                 }
-                if (isValidSquare(x + r, y + c)) {
+                if (isValidSquare((int) x + r, (int) y + c)) {
                     temp = new Node(x + r, y + c);
                     tempNeighborList.add(temp);
 

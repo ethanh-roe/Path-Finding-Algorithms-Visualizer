@@ -4,25 +4,25 @@ import java.awt.*;
 
 public class Node {
 
-    private int x;
+    private double x;
 
-    private int y;
+    private double y;
 
-    private int g;
+    private double g;
 
-    private int h;
+    private double h;
 
-    private int f;
+    private double f;
 
     private Node previousNode;
 
-    public Node(int x, int y, Node prevNode) {
+    public Node(double x, double y, Node prevNode) {
         this.x = x;
         this.y = y;
         this.previousNode = prevNode;
     }
 
-    public Node(int x, int y) {
+    public Node(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -31,27 +31,27 @@ public class Node {
         this.previousNode = parent;
     }
 
-    public int getX() {
+    public double getX() {
         return this.x;
     }
 
-    public int getY() {
+    public double getY() {
         return this.y;
     }
 
-    public void setG(int n) {
+    public void setG(double n) {
         this.g = n;
     }
 
-    public int getG() {
+    public double getG() {
         return g;
     }
 
     public void setH(Node end) {
-        h = (int) Math.sqrt(Math.pow(end.x - this.x, 2) + Math.pow(end.y - this.y, 2));
+        h = Math.sqrt(Math.pow(end.x - this.x, 2) + Math.pow(end.y - this.y, 2));
     }
 
-    public int getH() {
+    public double getH() {
         return h;
     }
 
@@ -60,7 +60,7 @@ public class Node {
         f = this.h + this.g;
     }
 
-    public int getF() {
+    public double getF() {
         return f;
     }
 
