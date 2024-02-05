@@ -16,8 +16,6 @@ public class Node {
 
     private Node previousNode;
 
-    private Color color;
-
     public Node(int x, int y, Node prevNode) {
         this.x = x;
         this.y = y;
@@ -27,14 +25,6 @@ public class Node {
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public void setParent(Node parent) {
@@ -49,13 +39,8 @@ public class Node {
         return this.y;
     }
 
-    public void setG() {
-        if (previousNode == null) {
-            g = 0;
-        } else {
-            g = this.previousNode.g + 1;
-        }
-
+    public void setG(int n) {
+        this.g = n;
     }
 
     public int getG() {

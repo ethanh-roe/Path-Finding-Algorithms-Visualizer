@@ -35,6 +35,10 @@ public class Panel extends JPanel {
         initGrid();
     }
 
+    public void setFrameTitle(String str) {
+        this.frame.setTitle("Path Finding Algorithms: Algorithm = [" + str + " ]");
+    }
+
     public int getScreenWidth() {
         return SCREEN_WIDTH;
     }
@@ -48,7 +52,10 @@ public class Panel extends JPanel {
     }
 
     private void sort() {
-        AStarAlgorithm algo = new AStarAlgorithm(this);
+//        AStarAlgorithm algo = new AStarAlgorithm(this);
+//        Thread thread = new Thread(algo);
+//        thread.start();
+        BreadthFirstSearch algo = new BreadthFirstSearch(this);
         Thread thread = new Thread(algo);
         thread.start();
     }
@@ -79,28 +86,27 @@ public class Panel extends JPanel {
                 if (grid[r][c] == 1) {
                     g.setColor(Color.black);
                     g.fillRect(r * 10, c * 10, 10, 10);
-                }else if(grid[r][c] == 2){
+                } else if (grid[r][c] == 2) {
                     g.setColor(Color.green);
                     g.fillRect(r * 10, c * 10, 10, 10);
-                }else if(grid[r][c] == 3){
-                    g.setColor(Color.red);
+                } else if (grid[r][c] == 3) {
+                    g.setColor(Color.cyan);
                     g.fillRect(r * 10, c * 10, 10, 10);
-                }else if(grid[r][c] == 4){
-                    g.setColor(Color.pink);
+                } else if (grid[r][c] == 4) {
+                    g.setColor(Color.yellow);
                     g.fillRect(r * 10, c * 10, 10, 10);
                 }
             }
         }
-
         paintGoal(g);
         g.setColor(Color.blue);
-        g.fillRect(grid[0][0], grid[0][0], 10, 10);
+        g.fillRect(0, 0, 10, 10);
 
     }
 
     private void paintGoal(Graphics g) {
 
-        g.setColor(Color.red);
+        g.setColor(Color.blue);
         g.fillRect(grid.length * 10 - 10, grid[0].length * 10 - 10, 10, 10);
     }
 
@@ -123,7 +129,7 @@ public class Panel extends JPanel {
         grid[SCREEN_HEIGHT / 10 - 2][SCREEN_WIDTH / 10 - 2] = 0;
     }
 
-    public void setGridState(int r, int c, int num){
+    public void setGridState(int r, int c, int num) {
         grid[r][c] = num;
     }
 
@@ -131,7 +137,6 @@ public class Panel extends JPanel {
 
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-//                System.out.println("Timer");
                 repaint();
             }
         };

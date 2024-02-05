@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 
 public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
 
+    private int dist;
     private int g = 0;
 
     private int h = 0;
@@ -32,6 +33,8 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
         endNode = new Node(panel.getWidth() / 10 - 1, panel.getHeight() / 10 - 5);
         startNode = new Node(0, 0);
         openList.add(startNode);
+        panel.setFrameTitle("A* Algorithm");
+        dist = 0;
     }
 
     @Override
@@ -44,31 +47,39 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
     }
 
     private void aStar() throws InterruptedException {
+        int tempG;
+        boolean newPath = false;
         while (openList.size() > 0) {
             Thread.sleep(10);
             currentNode = openList.poll();
             closedList.add(currentNode);
-            System.out.println(currentNode.getX() + ", " + currentNode.getY());
-            System.out.println(endNode.getX() + ", " + endNode.getY());
 
             if (currentNode.getX() == endNode.getX() && currentNode.getY() == endNode.getY()) {
-                //TODO
                 endNode.setParent(currentNode);
-                System.out.println("found end");
                 foundEnd();
                 return;
             }
             findNeighbors(currentNode);
             for (Node n : tempNeighborList) {
+                if(!closedListHas(n) && !panel.isWall(n.getY(), n.getX())){
+                    tempG = currentNode.getG() + currentNode.getH();
 
-                if (panel.isWall(n.getY(), n.getX()) || closedListHas(n)) {
-
-                } else {
-                    if (!openListHas(n) || openList.comparator().compare(currentNode, n) == 1) {
-                        n.setParent(currentNode);
-                        if (!openListHas(n)) {
-                            openList.add(n);
+                    newPath = false;
+                    if(openListHas(n)){
+                        if(tempG < n.getG()){
+                            n.setG(tempG);
+                            newPath = true;
                         }
+                    }else{
+                        n.setG(tempG);
+                        newPath = true;
+                        openList.add(n);
+                    }
+
+                    if(newPath){
+                        n.setH(endNode);
+                        n.setF();
+                        n.setParent(currentNode);
                     }
                 }
             }
@@ -80,10 +91,12 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
     private void foundEnd() throws InterruptedException {
         Node current = endNode;
         while(current != startNode){
+            dist++;
             Thread.sleep(10);
             panel.setGridState(current.getY(), current.getX(), 4);
             current = current.getPreviousNode();
         }
+        System.out.println("Distance = " + dist);
     }
 
     private boolean closedListHas(Node node){
@@ -120,29 +133,25 @@ public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
         Node temp;
         int x = node.getX();
         int y = node.getY();
-        for (int xx = -1; xx <= 1; xx++) {
-            for (int yy = -1; yy <= 1; yy++) {
-                if (xx == 0 && yy == 0) {
-                    continue; // You are not neighbor to yourself
-                }
-                if ( Math.abs(xx) + Math.abs(yy) > 1) {
+        for (int r = -1; r <= 1; r++) {
+            for (int c = -1; c <= 1; c++) {
+                if (c == 0 && r == 0) {
                     continue;
                 }
-                if (isOnMap(x + xx, y + yy)) {
-                    tempNeighborList.add(new Node(x + xx, y + yy, currentNode));
+                if ( Math.abs(c) + Math.abs(r) > 1) {
+                    continue;
+                }
+                if (isValidSquare(x + r, y + c)) {
+                    temp = new Node(x + r, y + c);
+                    tempNeighborList.add(temp);
+
                 }
             }
         }
 
     }
-    private boolean isOnMap(int x, int y) {
+    private boolean isValidSquare(int x, int y) {
         return x >= 0 && y >= 0 && x < panel.getScreenWidth() / 10 && y < panel.getScreenHeight() / 10;
-    }
-
-    private void initNode(Node n) {
-        n.setG();
-        n.setH(endNode);
-        n.setF();
     }
 
 
