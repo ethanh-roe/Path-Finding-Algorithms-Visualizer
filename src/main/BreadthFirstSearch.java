@@ -81,12 +81,15 @@ public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
     }
 
     private void foundEnd() throws InterruptedException {
+    	int dist = 0;
         Node current = endNode;
         while (current != startNode) {
+        	dist++;
             Thread.sleep(10);
             panel.setGridState((int) current.getY(), (int) current.getX(), 4);
             current = current.getPreviousNode();
         }
+        System.out.println("Distance = " + dist);
     }
 
     private boolean visitedListHas(Node node) {

@@ -1,0 +1,7 @@
+/bin/
+.idea
+.settings
+.DS_Store
+.classpath
+.project
+PathFindingAlgorithms.iml
