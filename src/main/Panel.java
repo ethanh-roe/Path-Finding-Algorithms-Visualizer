@@ -32,7 +32,9 @@ public class Panel extends JPanel {
 		frame.addKeyListener(new MyKeyListener());
 
 		frame.setFocusable(true);
-
+		
+		setFrameTitle("BFS");
+		
 		initGrid();
 	}
 
@@ -61,6 +63,12 @@ public class Panel extends JPanel {
 
 	private void AStar() {
 		AStarAlgorithm algo = new AStarAlgorithm(this);
+		Thread thread = new Thread(algo);
+		thread.start();
+	}
+	
+	private void DFS() {
+		DepthFirstSearch algo = new DepthFirstSearch(this);
 		Thread thread = new Thread(algo);
 		thread.start();
 	}
@@ -179,17 +187,25 @@ public class Panel extends JPanel {
 
 			case KeyEvent.VK_1:
 				System.out.println("Selected = BFS");
+				setFrameTitle("BFS");
 				selectedAlgorithm = 1; // BFS
 				break;
 
 			case KeyEvent.VK_2:
 				System.out.println("Selected = A*");
+				setFrameTitle("A*");
 				selectedAlgorithm = 2; // A*
 				break;
 				
 			case KeyEvent.VK_C:
 				System.out.println("Cleared grid");
 				initGrid();
+				break;
+			case KeyEvent.VK_3:
+				System.out.println("Selected = DFS");
+				setFrameTitle("DFS");
+				selectedAlgorithm = 3; // DFS
+				break;
 			}
 
 		}
