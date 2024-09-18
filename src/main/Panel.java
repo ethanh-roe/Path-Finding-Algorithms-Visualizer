@@ -1,6 +1,11 @@
 package main;
 
 import javax.swing.*;
+
+import main.algorithms.AStarAlgorithm;
+import main.algorithms.BreadthFirstSearch;
+import main.algorithms.DepthFirstSearch;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +19,10 @@ public class Panel extends JPanel {
 	private StopWatch timer;
 
 	private int selectedAlgorithm = 1; // BFS by default
-
+	
 	private int[][] grid;
+	
+	Thread algorithmThread;
 
 	private final int SCREEN_WIDTH = 900;
 
@@ -56,21 +63,20 @@ public class Panel extends JPanel {
 
 	private void BFS() {
 		BreadthFirstSearch algo = new BreadthFirstSearch(this);
-		Thread thread = new Thread(algo);
-		thread.start();
-
+		 algorithmThread = new Thread(algo);
+		 algorithmThread.start();
 	}
 
 	private void AStar() {
 		AStarAlgorithm algo = new AStarAlgorithm(this);
-		Thread thread = new Thread(algo);
-		thread.start();
+		algorithmThread = new Thread(algo);
+		algorithmThread.start();
 	}
 	
 	private void DFS() {
 		DepthFirstSearch algo = new DepthFirstSearch(this);
-		Thread thread = new Thread(algo);
-		thread.start();
+		algorithmThread = new Thread(algo);
+		algorithmThread.start();
 	}
 
 	private void initGrid() {
@@ -84,12 +90,14 @@ public class Panel extends JPanel {
 	}
 
 	public void paintComponent(Graphics g) {
+		g.setColor(Color.white);
+		g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		g.setColor(Color.black);
-		g.drawString("Controls:", 20, 920);
+		g.drawString("Controls: 1-9 = Switch Algorithm | c = clear screen | s = start", 20, 920);
 		for (int r = 0; r <= SCREEN_HEIGHT / 10; r++) {
 			g.drawLine(0, r * 10, SCREEN_WIDTH, r * 10);
 		}
-
+		
 		for (int c = 0; c <= SCREEN_WIDTH / 10; c++) {
 			g.drawLine(c * 10, 0, c * 10, SCREEN_HEIGHT);
 		}
@@ -170,41 +178,53 @@ public class Panel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+			
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_S:
-
+				
 				System.out.println("Started selection: " + selectedAlgorithm);
-
 				switch (selectedAlgorithm) {
 				case 1:
 					BFS();
 					break;
 				case 2:
 					AStar();
+					break;
+				case 3:
+					DFS();
+					break;
 				}
 
 				break;
 
 			case KeyEvent.VK_1:
+				if(!algorithmThread.isAlive()) { 
 				System.out.println("Selected = BFS");
 				setFrameTitle("BFS");
 				selectedAlgorithm = 1; // BFS
+				}
 				break;
 
 			case KeyEvent.VK_2:
+				if(!algorithmThread.isAlive()) { 
 				System.out.println("Selected = A*");
 				setFrameTitle("A*");
 				selectedAlgorithm = 2; // A*
+				}
 				break;
 				
 			case KeyEvent.VK_C:
+				if(!algorithmThread.isAlive()) { 
 				System.out.println("Cleared grid");
 				initGrid();
+				}
 				break;
 			case KeyEvent.VK_3:
+				if(!algorithmThread.isAlive()) { 
 				System.out.println("Selected = DFS");
 				setFrameTitle("DFS");
 				selectedAlgorithm = 3; // DFS
+				}
 				break;
 			}
 
