@@ -1,8 +1,11 @@
-package main;
+package main.algorithms;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import main.Node;
+import main.Panel;
 public class BreadthFirstSearch implements PathFindingAlgorithm, Runnable {
 
     private ArrayList<Node> tempNeighborList = new ArrayList<>();

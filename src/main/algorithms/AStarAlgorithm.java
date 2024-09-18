@@ -1,8 +1,12 @@
-package main;
+package main.algorithms;
 
+import main.Panel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+
+import main.Node;
+import main.NodeComparator;
 
 public class AStarAlgorithm implements PathFindingAlgorithm, Runnable {
 

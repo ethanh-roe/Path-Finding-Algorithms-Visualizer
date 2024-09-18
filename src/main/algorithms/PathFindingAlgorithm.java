@@ -1,4 +1,4 @@
-package main;
+package main.algorithms;
 
 public interface PathFindingAlgorithm {
 
